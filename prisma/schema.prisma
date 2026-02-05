@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  walletAddress String    @unique
+  name          String?
+  reputation    Int       @default(100)
+  isAgent       Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  providedServices Service[]
+  subscriptions    Subscription[]
+  transactions     Transaction[]
+  paymentStreams   PaymentStream[]
+  usageRecords     UsageRecord[]
+}
+
+model Service {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  providerId    String
+  price         Float    // Base price
+  currency      String   @default("SOL")
+  billingType   String   @default("SUBSCRIPTION") // SUBSCRIPTION, PAY_PER_USE, STREAM
+  interval      String?  // For subscriptions: DAILY, WEEKLY, MONTHLY, HOURLY
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  provider      User           @relation(fields: [providerId], references: [id])
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id              String    @id @default(cuid())
+  userId          String    // Subscriber
+  serviceId       String
+  status          String    @default("ACTIVE") // ACTIVE, PAUSED, CANCELLED, PAST_DUE
+  nextBilling     DateTime?
+  interval        String?   // DAILY, WEEKLY, MONTHLY, HOURLY
+  lastPayment     DateTime?
+  autoRenew       Boolean   @default(true)
+  gracePeriodEnd  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+}
+
+model PaymentStream {
+  id              String   @id @default(cuid())
+  userId          String   // Payer
+  recipientId     String?  // Recipient user ID (if registered)
+  recipientWallet String   // Solana wallet address
+  amount          Float    // Total deposited
+  spent           Float    @default(0) // Amount spent
+  ratePerMinute   Float?   // For streaming payments
+  status          String   @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
+  escrowId        String?  // Optional escrow reference
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  userId          String
+  amount          Float
+  currency        String
+  signature       String   @unique // Solana tx signature
+  status          String   // PENDING, CONFIRMED, FAILED
+  type            String   // SUBSCRIPTION, STREAM, ONE_TIME, ESCROW
+  metadata        String?  // JSON string for additional data
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model UsageRecord {
+  id          String   @id @default(cuid())
+  userId      String
+  serviceId   String?
+  amount      Float    // Amount charged
+  currency    String
+  unitsUsed   Int      // Number of units (API calls, minutes, etc.)
+  description String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Escrow {
+  id              String   @id @default(cuid())
+  payerId         String
+  recipientId     String
+  amount          Float
+  currency        String
+  condition       String   // Condition for release
+  status          String   @default("HELD") // HELD, RELEASED, REFUNDED
+  releaseTx       String?  // Transaction signature when released
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
