@@ -1,6 +1,6 @@
 import { Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
-const connection = new Connection(process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com');
+export const connection = new Connection(process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com');
 
 export class SolanaService {
   // Create a simple transfer transaction

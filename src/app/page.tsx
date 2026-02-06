@@ -10,6 +10,7 @@ import SubscriptionManager from '@/components/SubscriptionManager';
 import StreamManager from '@/components/StreamManager';
 import AgentReputation from '@/components/AgentReputation';
 import AgentNegotiation from '@/components/AgentNegotiation';
+import X402Demo from '@/components/X402Demo';
 
 export default function Home() {
   const { connected, publicKey } = useWallet();
@@ -20,6 +21,7 @@ export default function Home() {
     { id: 'payments', label: 'Payments', icon: '💸' },
     { id: 'subscriptions', label: 'Subscriptions', icon: '📅' },
     { id: 'streams', label: 'Streams', icon: '🌊' },
+    { id: 'x402', label: 'x402 Protocol', icon: '🔐' },
     { id: 'agents', label: 'Agents', icon: '🤖' },
     { id: 'negotiations', label: 'Negotiations', icon: '🤝' },
   ];
@@ -134,6 +136,12 @@ export default function Home() {
             {activeTab === 'streams' && (
               <div>
                 <StreamManager />
+              </div>
+            )}
+
+            {activeTab === 'x402' && (
+              <div>
+                <X402Demo />
               </div>
             )}
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { SolanaService } from '@/lib/solana';
+import { SolanaService, connection } from '@/lib/solana';
 
 interface PaymentFormProps {
   walletAddress: string;
@@ -50,7 +50,6 @@ export default function PaymentForm({ walletAddress }: PaymentFormProps) {
         const signed = await solana.signTransaction(transaction);
         
         // Send signed transaction
-        const connection = SolanaService['connection'];
         const signature = await connection.sendRawTransaction(signed.serialize());
         
         // Verify payment

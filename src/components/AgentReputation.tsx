@@ -97,7 +97,7 @@ export default function AgentReputation() {
                 </div>
               </div>
               <div className="text-right">
-                <p className={`text-3xl font-bold ${getReputationColor(agent.reputation)}`>
+                <p className={"text-3xl font-bold " + getReputationColor(agent.reputation)}>
                   {agent.reputation}
                 </p>
                 <span className="text-xs text-gray-500">{getReputationBadge(agent.reputation)}</span>

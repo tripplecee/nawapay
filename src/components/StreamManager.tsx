@@ -156,7 +156,7 @@ export default function StreamManager() {
                 <p className="text-sm text-gray-500 dark:text-gray-400">Recipient</p>
                 <p className="font-mono text-sm">{stream.recipientWallet.slice(0, 8)}...{stream.recipientWallet.slice(-8)}</p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(stream.status)}`>
+              <span className={"px-3 py-1 rounded-full text-sm font-medium " + getStatusColor(stream.status)}>
                 {stream.status}
               </span>
             </div>

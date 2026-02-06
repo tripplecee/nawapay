@@ -86,7 +86,7 @@ export default function SubscriptionManager() {
                   <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> / {sub.service.interval?.toLowerCase()}</span>
                 </p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(sub.status)}`>
+              <span className={"px-3 py-1 rounded-full text-sm font-medium " + getStatusColor(sub.status)}>
                 {sub.status}
               </span>
             </div>

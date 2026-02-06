@@ -10,7 +10,7 @@ interface Negotiation {
   service: string;
   proposedPrice: number;
   counterPrice?: number;
-  status: 'pending' | 'accepted' | 'rejected' | 'countered';
+  status: string;
   message: string;
   timestamp: string;
 }
@@ -50,17 +50,19 @@ export default function AgentNegotiation() {
     message: '',
   });
 
-  const handleResponse = (id: string, action: 'accept' | 'reject' | 'counter', counterPrice?: number) => {
-    setNegotiations(prev => prev.map(neg => {
-      if (neg.id === id) {
-        return {
-          ...neg,
-          status: action === 'counter' ? 'countered' : action === 'accept' ? 'accepted' : 'rejected',
-          counterPrice: counterPrice || neg.counterPrice,
-        };
-      }
-      return neg;
-    }));
+  const handleResponse = (id: string, action: string, counterPrice?: number) => {
+    setNegotiations((prev) =>
+      prev.map((neg) => {
+        if (neg.id === id) {
+          return {
+            ...neg,
+            status: action === 'counter' ? 'countered' : action === 'accept' ? 'accepted' : 'rejected',
+            counterPrice: counterPrice || neg.counterPrice,
+          };
+        }
+        return neg;
+      })
+    );
   };
 
   const submitNegotiation = (e: React.FormEvent) => {
@@ -82,10 +84,14 @@ export default function AgentNegotiation() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'accepted': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      case 'countered': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      default: return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'accepted':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'rejected':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      case 'countered':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      default:
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
     }
   };
 
@@ -102,7 +108,10 @@ export default function AgentNegotiation() {
       </div>
 
       {showNewNegotiation && (
-        <form onSubmit={submitNegotiation} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+        <form
+          onSubmit={submitNegotiation}
+          className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+        >
           <h3 className="text-lg font-semibold mb-4">Start New Negotiation</h3>
           <div className="space-y-4">
             <div>
@@ -178,21 +187,29 @@ export default function AgentNegotiation() {
 
       <div className="space-y-4">
         {negotiations.map((neg) => (
-          <div key={neg.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+          <div
+            key={neg.id}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700"
+          >
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-lg font-semibold">{neg.service}</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  with {neg.agentName} ({neg.agentWallet.slice(0, 6)}...{neg.agentWallet.slice(-6)})
+                  with {neg.agentName} ({neg.agentWallet.slice(0, 6)}...
+                  {neg.agentWallet.slice(-6)})
                 </p>
               </div>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(neg.status)}`>
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                  neg.status
+                )}`}
+              >
                 {neg.status}
               </span>
             </div>
 
             <p className="text-gray-600 dark:text-gray-300 mb-4 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-              "{neg.message}"
+              &quot;{neg.message}&quot;
             </p>
 
             <div className="flex items-center gap-4 mb-4">
@@ -200,7 +217,7 @@ export default function AgentNegotiation() {
                 <p className="text-sm text-gray-500">Proposed Price</p>
                 <p className="text-xl font-bold">{neg.proposedPrice} SOL</p>
               </div>
-              
+
               {neg.counterPrice && (
                 <div>
                   <p className="text-sm text-gray-500">Counter Offer</p>
@@ -243,7 +260,9 @@ export default function AgentNegotiation() {
         {negotiations.length === 0 && (
           <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <p className="text-gray-500 dark:text-gray-400">No negotiations yet</p>
-            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Start negotiating with agents for services</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
+              Start negotiating with agents for services
+            </p>
           </div>
         )}
       </div>
