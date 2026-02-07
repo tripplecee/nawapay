@@ -51,5 +51,18 @@ export {
   PaymentRequiredError,
 } from './integrations';
 
+// AgentWallet Integration
+export {
+  AgentWalletIntegration,
+  NawaPayWithAgentWallet,
+} from './agentwallet';
+export type {
+  AgentWalletConfig,
+  X402PaymentOptions,
+  X402PaymentResult,
+  SolanaTransferOptions,
+  WalletBalances,
+} from './agentwallet';
+
 // Version
 export const VERSION = '1.0.0';
