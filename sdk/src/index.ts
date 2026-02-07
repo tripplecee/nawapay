@@ -43,5 +43,13 @@ export type {
   ServiceInfo,
 } from './types';
 
+// Partner Integrations
+export {
+  ClawIntegration,
+  AgentRegistryIntegration,
+  ClawbetIntegration,
+  PaymentRequiredError,
+} from './integrations';
+
 // Version
 export const VERSION = '1.0.0';
